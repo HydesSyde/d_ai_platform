@@ -1,0 +1,47 @@
+{
+  "name": "d_ai_platform",
+  "version": "1.0.0",
+  "description": "A document intelligent platform that allows users to upload PDFs, the system processes them in the background, and they'll be able to chat with their documents using AI.",
+  "keywords": [
+    "document",
+    "ai",
+    "platform",
+    "typescript",
+    "javascript",
+    "groq"
+  ],
+  "homepage": "https://github.com/HydesSyde/d_ai_platform#readme",
+  "bugs": {
+    "url": "https://github.com/HydesSyde/d_ai_platform/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HydesSyde/d_ai_platform.git"
+  },
+  "license": "ISC",
+  "author": "Michael Igbanesi, LamestAmos, TechAyo",
+  "type": "module",
+  "main": "server.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
+    "@types/multer": "^2.1.0",
+    "@types/node": "^25.9.1",
+    "@types/pg": "^8.20.0",
+    "@types/uuid": "^10.0.0",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "axios": "^1.16.1"
+  }
+}
