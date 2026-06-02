@@ -15,6 +15,13 @@
       "when": 1780322838143,
       "tag": "0001_dear_bushwacker",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1780439417176,
+      "tag": "0002_green_purifiers",
+      "breakpoints": true
     }
   ]
 }

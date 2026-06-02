@@ -43,23 +43,25 @@ const signUp = async (req: Request , res: Response) => {
 
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            const newUser = await db
+            const [newUser] = await db
             .insert(users)
             .values({
                 fullname,
                 email,
                 password: hashedPassword,
                 role: "user",
-                token: ""
-            }).returning();
+                token: ""}).returning();
 
+                if(!newUser){
+                    throw new Error("Failed to create a user");
+                }
 
             const token = generateAccessToken(newUser);
 
             res.status(201).json({
                 success: true,
                 token,
-                data: newUser[0]
+                data: newUser
             })
 
         } catch (error) {
@@ -71,48 +73,49 @@ const signUp = async (req: Request , res: Response) => {
         }
 }
 
-// const signIn = async (req: Request , res: Response) => {
-//         try {
+const signIn = async (req: Request , res: Response) => {
+        try {
+                //validate user input
+                const { email, password } = signInValidator.parse(req.body);
 
-//                 //validate user input
-//                 const { email, password } = signInValidator.parse(req.body);
+                //check if user exists in db
+                const [foundUser] = await db
+                .select()
+                .from(users)
+                .where(eq(users.email, email));
 
-//                 //check if user exists in db
-//                 const foundUser = await db
-//                 .select()
-//                 .from(users)
-//                 .where(eq(users.email, email));
+                if (!foundUser) {
+                return res.status(400).json({
+                    message: "User not found",
+                    success: false,
+                });
+                }
 
-//                 if (!foundUser.length) {
-//                 return res.status(400).json({
-//                     message: "User not found",
-//                     success: false,
-//                 });
-//                 }
+                //check for correct password by comparing using bcrypt
+                const correctPassword = bcrypt.compare(
+                    password,
+                    foundUser.password
+                );
 
-//                     //check for correct password by comparing using bcrypt
-//                 const correctPassword = bcrypt.compare(
-//                     password,
-//                     foundUser[0]?.password
-//                 );
+                if (!correctPassword) {
+                return res.status(401).json({ message: "Invalid credentials" });
+                }
 
-//                 if (!correctPassword) {
-//                 return res.status(401).json({ message: "Invalid credentials" });
-//                 }
+                //generate access token
+                const token = generateAccessToken(foundUser);
 
-//             //generate access token
-//             const token = generateAccessToken(foundUser);
+                res.status(201).json({
+                    success: true,
+                    token,
+                    message: "Sign-in Successful"
+                })
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                success: false,
+                message: "Internal Server error. Sign-In failed"
+            })
+        }
+}
 
-//                 res.status(201).json({
-//                     success: true,
-//                 })
-//         } catch (error) {
-//             console.log(error);
-//             res.status(500).json({
-//                 success: false,
-//                 message: "Internal Server error. Sign-In failed"
-//             })
-//         }
-// }
-
-export {signUp}
+export {signUp, signIn}
