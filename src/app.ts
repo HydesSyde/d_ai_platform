@@ -1,5 +1,6 @@
 import express, { type Request, type Response } from "express"
-import authRouter from "./route/auth.route.js"
+import authRouter from "./route/auth.route.js";
+import documentRouter from "./route/document.route.js";
 const app = express();
 
 app.use(express.json());
@@ -9,6 +10,7 @@ app.get("/", (req: Request, res: Response) => {
 })
 
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/document", documentRouter);
 
 
 export default app

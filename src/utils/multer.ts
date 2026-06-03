@@ -10,6 +10,18 @@ const uploads = multer({
         }
     }),
     limits: {
-        fileSize: 10 * 1024 * 1024,
+        fileSize: 15 * 1024 * 1024,
+    },
+    fileFilter: (req, file, cb) => {
+        const alllowedFileType = ["image/png", "image/jpg", "applications/pdf"];
+
+        if(alllowedFileType.includes(file.mimetype)){
+            cb(null, true);
+        } else {
+            cb(new Error("Invalid file type. Only images and pdfs are allowed"));
+        }
     }
 })
+
+
+export { uploads }
