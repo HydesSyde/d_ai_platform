@@ -5,6 +5,10 @@ import { documents } from "../schema/document.js";
 
 const upload : RequestHandler = async (req, res) => {
         uploads.single("file")(req, res, async(err)=> {
+               console.log("CONTENT TYPE:", req.headers["content-type"]);
+                console.log("FILE:", req.file);
+                console.log("BODY:", req.body);
+                console.log("MULTER ERROR:", err);
 
         if (err) return res.status(400).json({ error: err.message });
         if (!req.file) return res.status(400).json({ error: "No file uploaded" });

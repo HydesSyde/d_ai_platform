@@ -13,7 +13,7 @@ const uploads = multer({
         fileSize: 15 * 1024 * 1024,
     },
     fileFilter: (req, file, cb) => {
-        const alllowedFileType = ["image/png", "image/jpg", "applications/pdf"];
+        const alllowedFileType = ["image/png", "image/jpeg", "application/pdf"];
 
         if(alllowedFileType.includes(file.mimetype)){
             cb(null, true);
