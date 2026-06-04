@@ -43,10 +43,26 @@ const upload : RequestHandler = async (req, res) => {
             message: "Internal server error. Unable to upload file"
         })
     }
-    })
-
-   
+    })  
 }
 
+const deleteDocument: RequestHandler = async (req, res) => {
+        try {
 
-export {upload}
+            const id = req.params.id;
+            if(!id) {
+                return res.status(409).json({
+                    success: false,
+                    message: "No document selected"
+                })
+            }
+            
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                message: "Internal Server Error. Unable to delete Document"
+            })
+        }
+}
+
+export {upload, deleteDocument}
