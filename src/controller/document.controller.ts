@@ -89,6 +89,12 @@ const getAllDoc: RequestHandler = async (req, res) => {
         try {
             const query = await db.select().from(documents);
 
+            if(!query.length){
+                return res.status(404).json({
+                    message: "No documents founds"
+                })
+            }
+
             res.status(201).json({
                 success: true,
                 message: "Documents are ready to view",
@@ -105,4 +111,40 @@ const getAllDoc: RequestHandler = async (req, res) => {
         }
 }
 
-export {upload, getAllDoc, deleteDocument}
+
+const getOneDoc: RequestHandler = async (req, res) => {
+try {
+    const {id} = req.params;
+
+    if(!id){
+        return res.status(404).json({
+            success: false,
+            message: "No ids are provided"                                                                                                                                                                              
+        })
+    }
+
+    const singleQuery = await db.select().from(documents).where(eq(documents.id, Number(id)));
+
+    if(!singleQuery) {
+        return res.status(404).json({
+            success: false,
+            message: "No documents exists"
+        })
+    }
+
+    res.status(201).json({
+        success: true,
+        message: "Document retrieval successful",
+        singleQuery
+    })
+    
+} catch (error) {
+    console.log(error);
+    res.status(500).json({
+        success: false,
+        messsage: "Internal Serveer Error. Unable to get a document"
+    })
+}
+}
+
+export {upload, getAllDoc,  getOneDoc, deleteDocument}
