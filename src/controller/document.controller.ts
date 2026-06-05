@@ -2,6 +2,8 @@ import type { RequestHandler} from "express";
 import { uploads } from "../utils/multer.js";
 import { db } from "../db.js";
 import { documents } from "../schema/document.js";
+import { eq } from "drizzle-orm";
+import { success } from "zod";
 
 const upload : RequestHandler = async (req, res) => {
         uploads.single("file")(req, res, async(err)=> {
@@ -49,13 +51,31 @@ const upload : RequestHandler = async (req, res) => {
 const deleteDocument: RequestHandler = async (req, res) => {
         try {
 
-            const id = req.params.id;
+            const {id} = req.params;
+
             if(!id) {
                 return res.status(409).json({
                     success: false,
                     message: "No document selected"
                 })
             }
+
+            const deletedDoc = await db
+            .delete(documents)
+            .where(eq(documents.id, Number(id))).returning();
+
+
+            if(!deletedDoc.length) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Document not found"
+                })
+            }
+
+            res.status(202).json({
+                success: true,
+                message: "Document deleted successfully"
+            })
             
         } catch (error) {
             console.log(error);
@@ -65,4 +85,24 @@ const deleteDocument: RequestHandler = async (req, res) => {
         }
 }
 
-export {upload, deleteDocument}
+const getAllDoc: RequestHandler = async (req, res) => {
+        try {
+            const query = await db.select().from(documents);
+
+            res.status(201).json({
+                success: true,
+                message: "Documents are ready to view",
+                query
+            })
+
+            
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                success: false,
+                message: "Internal Server Erorr. Unable to get all Documents"
+            })
+        }
+}
+
+export {upload, getAllDoc, deleteDocument}
