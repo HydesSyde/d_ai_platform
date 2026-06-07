@@ -1,9 +1,9 @@
 import type { RequestHandler} from "express";
+import { eq } from "drizzle-orm";
+import pdfParse from "@cedrugs/pdf-parse"
 import { uploads } from "../utils/multer.js";
 import { db } from "../db.js";
 import { documents } from "../schema/document.js";
-import { eq } from "drizzle-orm";
-import { success } from "zod";
 
 const upload : RequestHandler = async (req, res) => {
         uploads.single("file")(req, res, async(err)=> {
@@ -20,6 +20,9 @@ const upload : RequestHandler = async (req, res) => {
             return res.status(400).json({ error: "No file uploaded"});
         }
 
+        const data = await pdfParse(req.file.buffer);
+        const extractedText = data.text;
+
         const {originalname, mimetype, size} = req.file;
 
         const storageKey = Date.now() + "-" + originalname;
@@ -27,6 +30,7 @@ const upload : RequestHandler = async (req, res) => {
         const [newDocument] = await db.insert(documents).values({
                 userId: (req as any).user.id,
                 originalFileName: originalname,
+                content: extractedText,
                 mimeType: mimetype,
                 sizeByte: size,
                 storageKey: storageKey,
@@ -35,7 +39,7 @@ const upload : RequestHandler = async (req, res) => {
 
         res.status(201).json({
             success: true,
-            message: "file uploaded successfully",
+            message: "file uploaded and Text extracted successfully",
             newDocument
         })
     } catch (error) {

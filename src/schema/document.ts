@@ -6,6 +6,7 @@ export const documents = pgTable("documents", {
     userId: integer("user_id").references(()=> users.id).notNull(),
     title: text("text").default(""),
     originalFileName: text("original_file_name").default(""),
+    content: text("content").notNull(),
     mimeType: text("mime_type").default(""),
     sizeByte: integer("size_byte").default(0),
     storageKey: text("storage_key").default(""),
