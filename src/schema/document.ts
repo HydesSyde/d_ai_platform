@@ -1,4 +1,4 @@
-import { integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { integer, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { users } from "./users.js";
 
 export const documents = pgTable("documents", {
@@ -7,6 +7,8 @@ export const documents = pgTable("documents", {
     title: text("text").default(""),
     originalFileName: text("original_file_name").default(""),
     content: text("content").notNull(),
+    summary: varchar("summary").default(''),
+    tags: varchar("tags").default(''),
     mimeType: text("mime_type").default(""),
     sizeByte: integer("size_byte").default(0),
     storageKey: text("storage_key").default(""),
